@@ -1,39 +1,36 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import axios from 'axios';
-
-import Pokemon from './Pokemon';
-// import PokemonList from './Pokemon';
+import GitHubUser from './GitHubUser';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: '', img: '' };
+    this.state = {
+      data: '',
+      username: 'mrwhiterk',
+      value: '',
+      users: localStorage.getItem('users') || []
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.addUser = this.addUser.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = () => {
       if (xhttp.readyState === 4 && xhttp.status === 200) {
-        this.setState({ data: JSON.parse(xhttp.response) }, () => {
-          let xhttp2 = new XMLHttpRequest();
-          xhttp2.onreadystatechange = () => {
-            if (xhttp2.readyState === 4 && xhttp2.status === 200) {
-              this.setState(
-                { img: JSON.parse(xhttp2.response) },
-                () => {
-                  console.log('img loaded');
-                },
-                () => console.log(this.state)
-              );
-            }
-          };
-          xhttp2.open('GET', this.state.data.forms[0].url, true);
-        });
+        this.setState({ data: JSON.parse(xhttp.response) }, () => {});
       }
     };
-    xhttp.open('GET', 'https://pokeapi.co/api/v2/pokemon/pikachu/', true);
+    xhttp.open('GET', `https://api.github.com/users/${this.state.value}`, true);
     xhttp.setRequestHeader('Access-Control-Allow-Credentials', true);
     xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
     xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
@@ -41,11 +38,44 @@ class App extends Component {
     xhttp.send();
   }
 
+  addUser() {
+    console.log('hit', this);
+    this.setState({ users: this.state.users.concat([this.state.data]) }, () =>
+      localStorage.setItem('users', this.state.users)
+    );
+  }
+
   render() {
+    console.log('state', this.state.users);
     return (
       <div className="App">
-        <h1>PokeDex</h1>
-        <Pokemon pokemonData={this.state.data} />
+        <h1 className="m-5">Github WatchList</h1>
+        <form className="mt-5 mb-5" onSubmit={this.handleSubmit}>
+          <div className="input-group mb-3">
+            <div className="input-group-prepend">
+              <input
+                className="btn btn-outline-secondary"
+                type="submit"
+                value="Submit"
+                id="button-addon1"
+                onClick={this.handleSubmit}
+              />
+            </div>
+            <input
+              type="text"
+              value={this.state.value}
+              onChange={this.handleChange}
+              className="form-control"
+              placeholder="enter username"
+              aria-label="Example text with button addon"
+              aria-describedby="button-addon1"
+            />
+          </div>
+        </form>
+        {this.state.data && (
+          <GitHubUser addUser={this.addUser} ghUserData={this.state.data} />
+        )}
+        <h3>Your List</h3>
       </div>
     );
   }

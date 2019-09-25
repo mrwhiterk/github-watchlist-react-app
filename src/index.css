@@ -6,13 +6,19 @@ body {
   padding: 0;
 }
 
-.pokemon-card {
-  border: 1px solid black;
-  width: 80%;
+.ghuser-card {
+  border: 1px solid grey;
+  padding: 1%;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ghuser-card img {
+  width: 200px;
 }
 
 .App {
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
