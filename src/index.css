@@ -15,8 +15,8 @@ body {
 
 .ghuser-card {
   margin: 2% 0;
-  border: 1px solid grey;
-  border-radius: 10px;
+  border-bottom: 1px solid grey;
+
   padding: 1%;
   display: flex;
   justify-content: space-around;

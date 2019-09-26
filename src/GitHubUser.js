@@ -41,7 +41,7 @@ class GitHubUser extends Component {
           {!this.props.ghUserData.isAdded && (
             <button
               type="button"
-              class="btn btn-success"
+              className="btn btn-success"
               onClick={this.props.addUser}
             >
               Add
@@ -50,8 +50,8 @@ class GitHubUser extends Component {
           {this.props.ghUserData.isAdded && (
             <button
               type="button"
-              class="btn btn-danger"
-              onClick={this.props.removeUser}
+              className="btn btn-danger"
+              onClick={this.props.removeUser.bind(null, login)}
             >
               Delete
             </button>

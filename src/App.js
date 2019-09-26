@@ -9,7 +9,7 @@ class App extends Component {
     super(props);
     this.state = {
       data: '',
-      username: 'mrwhiterk',
+      username: '',
       value: '',
       users: JSON.parse(localStorage.getItem('users')) || []
     };
@@ -17,6 +17,7 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addUser = this.addUser.bind(this);
+    this.removeUser = this.removeUser.bind(this);
   }
 
   handleChange(event) {
@@ -28,7 +29,10 @@ class App extends Component {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = () => {
       if (xhttp.readyState === 4 && xhttp.status === 200) {
-        this.setState({ data: JSON.parse(xhttp.response) }, () => {});
+        this.setState(
+          { data: JSON.parse(xhttp.response), value: '' },
+          () => {}
+        );
       }
     };
     xhttp.open('GET', `https://api.github.com/users/${this.state.value}`, true);
@@ -40,10 +44,30 @@ class App extends Component {
   }
 
   addUser() {
+    if (
+      !this.state.users.find(user => {
+        return user.login === this.state.data.login;
+      })
+    ) {
+      this.setState(
+        {
+          users: this.state.users.concat([
+            { ...this.state.data, isAdded: true }
+          ])
+        },
+        () => {
+          localStorage.setItem('users', JSON.stringify(this.state.users));
+          this.setState({ data: '' });
+        }
+      );
+    } else {
+      alert(this.state.data.name + ' is already on your list');
+    }
+  }
+
+  removeUser(username) {
     this.setState(
-      {
-        users: this.state.users.concat([{ ...this.state.data, isAdded: true }])
-      },
+      { users: this.state.users.filter(x => x.login !== username) },
       () => localStorage.setItem('users', JSON.stringify(this.state.users))
     );
   }
@@ -81,8 +105,11 @@ class App extends Component {
         {this.state.data && (
           <GitHubUser addUser={this.addUser} ghUserData={this.state.data} />
         )}
-        <h3>Your List</h3>
-        <GitHubUserList userList={this.state.users} />
+        <h3>Your List ({this.state.users.length} users)</h3>
+        <GitHubUserList
+          removeUser={this.removeUser}
+          userList={this.state.users}
+        />
       </div>
     );
   }
