@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 import GitHubUser from './GitHubUser';
+import GitHubUserList from './GitHubUserList';
 
 class App extends Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class App extends Component {
       data: '',
       username: 'mrwhiterk',
       value: '',
-      users: localStorage.getItem('users') || []
+      users: JSON.parse(localStorage.getItem('users')) || []
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -39,18 +40,23 @@ class App extends Component {
   }
 
   addUser() {
-    console.log('hit', this);
-    this.setState({ users: this.state.users.concat([this.state.data]) }, () =>
-      localStorage.setItem('users', this.state.users)
+    this.setState(
+      {
+        users: this.state.users.concat([{ ...this.state.data, isAdded: true }])
+      },
+      () => localStorage.setItem('users', JSON.stringify(this.state.users))
     );
   }
 
   render() {
-    console.log('state', this.state.users);
     return (
-      <div className="App">
+      <div className="App text-center">
         <h1 className="m-5">Github WatchList</h1>
-        <form className="mt-5 mb-5" onSubmit={this.handleSubmit}>
+        <form
+          className="mt-5 mb-5"
+          id="searchForm"
+          onSubmit={this.handleSubmit}
+        >
           <div className="input-group mb-3">
             <div className="input-group-prepend">
               <input
@@ -76,6 +82,7 @@ class App extends Component {
           <GitHubUser addUser={this.addUser} ghUserData={this.state.data} />
         )}
         <h3>Your List</h3>
+        <GitHubUserList userList={this.state.users} />
       </div>
     );
   }

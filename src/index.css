@@ -1,17 +1,30 @@
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 .ghuser-card {
+  margin: 2% 0;
   border: 1px solid grey;
+  border-radius: 10px;
   padding: 1%;
-  width: 90%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+}
+
+#searchForm {
+  width: 50%;
+  margin: 0 auto;
 }
 
 .ghuser-card img {
@@ -19,8 +32,5 @@ body {
 }
 
 .App {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 90vw;
+  width: 70%;
 }
