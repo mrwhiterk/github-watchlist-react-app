@@ -27,19 +27,17 @@ class App extends Component {
   handleSubmit(event) {
     event.preventDefault();
     let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = () => {
-      if (xhttp.readyState === 4 && xhttp.status === 200) {
+    xhttp.open('GET', `https://api.github.com/users/${this.state.value}`, true);
+    xhttp.onload = () => {
+      if (xhttp.status == 200) {
         this.setState(
-          { data: JSON.parse(xhttp.response), value: '' },
-          () => {}
+          {
+            data: JSON.parse(xhttp.response),
+            value: ''
+          }
         );
       }
     };
-    xhttp.open('GET', `https://api.github.com/users/${this.state.value}`, true);
-    xhttp.setRequestHeader('Access-Control-Allow-Credentials', true);
-    xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
-    xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
-    xhttp.setRequestHeader('Access-Control-Allow-Headers', 'application/json');
     xhttp.send();
   }
 
